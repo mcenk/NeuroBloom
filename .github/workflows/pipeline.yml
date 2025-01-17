@@ -1,0 +1,35 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main  # Sadece 'main' branch'e push olduğunda çalışır
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Repo'yu Klonla
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # 2. Gradle ile Build Et
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+      # 3. Docker ile Login Ol
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      # 4. Docker Image Oluştur
+      - name: Build Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/neurobloom:latest .
+
+      # 5. Docker Image'ı Push Et
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/neurobloom:latest
+
