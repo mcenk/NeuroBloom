@@ -28,10 +28,18 @@ public class EntryController {
         this.entryService = entryService;
     }
 
+
+    @GetMapping("/hello")
+    public ResponseEntity<String> hello() {
+        return ResponseEntity.ok("HELLO I AM HERE");
+    }
+
     @GetMapping
     public ResponseEntity<List<Entry>> getAllEntries() {
         return ResponseEntity.ok(entryService.getAllEntries());
     }
+
+
 
     @PostMapping
     public ResponseEntity<Entry> createEntry(@RequestBody EntryRequest entryRequest) {
